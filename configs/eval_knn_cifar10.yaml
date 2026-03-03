@@ -7,9 +7,9 @@ data_root: ./data
 id_dataset: cifar10
 ood_datasets: [svhn, lsun, isun, textures, places365]
 
-checkpoint: outputs/supcon/best.pt
-feature_bank_cache: outputs/supcon/feature_bank.npy
-labels_cache: outputs/supcon/labels.npy
+checkpoint: outputs/ce/best.pt
+feature_bank_cache: outputs/ce/feature_bank.npy
+labels_cache: outputs/ce/labels.npy
 
 knn:
   k: 50
