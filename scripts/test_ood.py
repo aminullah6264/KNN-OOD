@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from knn_ood.datasets import get_cifar10, get_ood_dataset, make_loader
 from knn_ood.metrics import auroc, fpr95
-from knn_ood.models import ResNet18Backbone, l2_normalize
+from knn_ood.models import ResNet18Backbone, infer_proj_dim, l2_normalize
 from knn_ood.utils import load_yaml
 
 
@@ -53,8 +53,9 @@ def main():
     cfg = load_yaml(args.config)
     device = torch.device(cfg["device"] if torch.cuda.is_available() else "cpu")
 
-    model = ResNet18Backbone(num_classes=10, proj_dim=128)
     ckpt = torch.load(cfg["checkpoint"], map_location="cpu")
+    proj_dim = infer_proj_dim(ckpt["model"])
+    model = ResNet18Backbone(num_classes=10, proj_dim=proj_dim)
     model.load_state_dict(ckpt["model"])
     model = model.to(device)
 

@@ -32,3 +32,14 @@ class ResNet18Backbone(nn.Module):
 
 def l2_normalize(x: torch.Tensor) -> torch.Tensor:
     return F.normalize(x, p=2, dim=1)
+
+
+def infer_proj_dim(state_dict: dict[str, torch.Tensor]) -> int | None:
+    """Infer projector output dimension from a saved model state dict.
+
+    Returns None for checkpoints trained without a projector head.
+    """
+    proj_weight = state_dict.get("projector.2.weight")
+    if proj_weight is None:
+        return None
+    return int(proj_weight.shape[0])

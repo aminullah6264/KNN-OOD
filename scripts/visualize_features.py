@@ -13,7 +13,7 @@ from sklearn.manifold import TSNE
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from knn_ood.datasets import get_cifar10, get_ood_dataset, make_loader
-from knn_ood.models import ResNet18Backbone, l2_normalize
+from knn_ood.models import ResNet18Backbone, infer_proj_dim, l2_normalize
 
 
 def parse_args():
@@ -44,8 +44,10 @@ def collect(model, loader, device, limit):
 def main():
     args = parse_args()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = ResNet18Backbone(num_classes=10, proj_dim=128)
-    model.load_state_dict(torch.load(args.checkpoint, map_location="cpu")["model"])
+    ckpt = torch.load(args.checkpoint, map_location="cpu")
+    proj_dim = infer_proj_dim(ckpt["model"])
+    model = ResNet18Backbone(num_classes=10, proj_dim=proj_dim)
+    model.load_state_dict(ckpt["model"])
     model = model.to(device).eval()
 
     id_loader = make_loader(get_cifar10(args.data_root, train=False), 256, 4)
