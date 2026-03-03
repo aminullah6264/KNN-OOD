@@ -10,7 +10,7 @@ data:
 model:
   backbone: resnet18
   num_classes: 10
-  feature_dim: 512
+  feature_dim: 1024
 
 train:
   epochs: 100

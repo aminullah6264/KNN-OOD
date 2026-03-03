@@ -78,8 +78,9 @@ according to `val.target_tpr` (default `0.95`).
 ```bash
 python scripts/visualize_features.py \
   --checkpoint outputs/supcon/best.pt \
-  --ood lsun \
-  --output outputs/tsne_lsun.png
+  --ood svhn \
+  --output outputs/tsne_svhn.png \
+  --method both
 ```
 
 This generates a t-SNE scatter of normalized penultimate features, similar to the qualitative analysis in the paper.

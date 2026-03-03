@@ -5,7 +5,7 @@ num_workers: 4
 
 data_root: ./data
 id_dataset: cifar10
-ood_datasets: [svhn, lsun, isun, textures, places365]
+ood_datasets: [svhn] # , lsun, isun, textures, places365
 
 checkpoint: outputs/ce/best.pt
 feature_bank_cache: outputs/ce/feature_bank.npy
