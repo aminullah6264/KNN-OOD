@@ -11,7 +11,18 @@ checkpoint: outputs/ce/best.pt
 feature_bank_cache: outputs/ce/feature_bank.npy
 labels_cache: outputs/ce/labels.npy
 
+val:
+  ratio: 0.1
+  target_tpr: 0.95
+
+ood_methods: [knn, knn_drop]
+
 knn:
   k: 50
   normalize: true
   use_faiss: true
+
+knn_drop:
+  drop_percent: 10
+  seed: 1234
+  renormalize: true

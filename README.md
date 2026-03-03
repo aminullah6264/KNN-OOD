@@ -63,13 +63,15 @@ python scripts/test_ood.py --config configs/eval_knn_cifar10.yaml
 Output format:
 
 ```text
-dataset,fpr95,auroc
-svhn,...
-lsun,...
-isun,...
-textures,...
-places365,...
+method,dataset,tau,id_accept_rate_val,fpr95,auroc
+knn,svhn,...
+knn_drop,svhn,...
+...
 ```
+
+By default, `configs/eval_knn_cifar10.yaml` runs **both** `knn` and `knn_drop`.
+For each method, the OOD threshold `tau` is fitted on a held-out validation subset of CIFAR-10 train
+according to `val.target_tpr` (default `0.95`).
 
 ## 5) Visualize feature geometry (ID vs OOD)
 
@@ -104,4 +106,3 @@ This generates a t-SNE scatter of normalized penultimate features, similar to th
 - `knn_ood/losses.py` – supervised contrastive loss.
 - `knn_ood/datasets.py` – CIFAR-10 / OOD loaders.
 - `knn_ood/metrics.py` – FPR@95 and AUROC.
-
