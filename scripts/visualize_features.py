@@ -2,11 +2,15 @@
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from sklearn.manifold import TSNE
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from knn_ood.datasets import get_cifar10, get_ood_dataset, make_loader
 from knn_ood.models import ResNet18Backbone, l2_normalize

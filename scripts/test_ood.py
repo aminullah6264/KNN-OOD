@@ -2,9 +2,13 @@
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 
 import numpy as np
 import torch
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from knn_ood.datasets import get_cifar10, get_ood_dataset, make_loader
 from knn_ood.metrics import auroc, fpr95
