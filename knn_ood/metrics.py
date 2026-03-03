@@ -8,8 +8,10 @@ def fpr95(id_scores: np.ndarray, ood_scores: np.ndarray) -> float:
     y_true = np.concatenate([np.ones_like(id_scores), np.zeros_like(ood_scores)])
     y_score = np.concatenate([id_scores, ood_scores])
     fpr, tpr, _ = roc_curve(y_true, y_score)
-    idx = np.argmin(np.abs(tpr - 0.95))
-    return float(fpr[idx] * 100.0)
+    target_tpr = 0.95
+    if np.any(tpr >= target_tpr):
+        return float(np.interp(target_tpr, tpr, fpr) * 100.0)
+    return 100.0
 
 
 def auroc(id_scores: np.ndarray, ood_scores: np.ndarray) -> float:
