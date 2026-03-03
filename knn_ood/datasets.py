@@ -23,8 +23,22 @@ def _cifar_transform(train: bool):
     return transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean, std)])
 
 
+class TwoCropTransform:
+    """Generate two stochastic views of the same image for SupCon training."""
+
+    def __init__(self, transform):
+        self.transform = transform
+
+    def __call__(self, x):
+        return [self.transform(x), self.transform(x)]
+
+
 def get_cifar10(root: str, train: bool):
     return datasets.CIFAR10(root=root, train=train, download=True, transform=_cifar_transform(train))
+
+
+def get_cifar10_two_crop(root: str):
+    return datasets.CIFAR10(root=root, train=True, download=True, transform=TwoCropTransform(_cifar_transform(True)))
 
 
 def get_ood_dataset(name: str, root: str):
