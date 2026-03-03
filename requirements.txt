@@ -1,0 +1,8 @@
+torch>=2.0
+torchvision>=0.15
+faiss-cpu>=1.7
+numpy
+scikit-learn
+matplotlib
+pyyaml
+tqdm
