@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from knn_ood.datasets import get_cifar10, make_loader
+from knn_ood.datasets import get_cifar10, get_cifar10_two_crop, make_loader
 from knn_ood.losses import SupConLoss
 from knn_ood.models import ResNet18Backbone
 from knn_ood.utils import load_yaml, make_dir, set_seed
@@ -34,7 +34,10 @@ def main():
     device = torch.device(cfg["device"] if torch.cuda.is_available() else "cpu")
     make_dir(cfg["save_dir"])
 
-    train_set = get_cifar10(cfg["data"]["root"], train=True)
+    if args.mode == "supcon":
+        train_set = get_cifar10_two_crop(cfg["data"]["root"])
+    else:
+        train_set = get_cifar10(cfg["data"]["root"], train=True)
     test_set = get_cifar10(cfg["data"]["root"], train=False)
     train_loader = make_loader(train_set, cfg["data"]["batch_size"], cfg["data"]["num_workers"], shuffle=True)
     test_loader = make_loader(test_set, cfg["data"]["batch_size"], cfg["data"]["num_workers"], shuffle=False)
@@ -62,13 +65,22 @@ def main():
     for epoch in range(cfg["train"]["epochs"]):
         model.train()
         for x, y in tqdm(train_loader, desc=f"Train {epoch+1}/{cfg['train']['epochs']}", leave=False):
-            x, y = x.to(device), y.to(device)
             optimizer.zero_grad()
-            logits, _, proj = model(x, return_features=True)
             if args.mode == "ce":
+                x, y = x.to(device), y.to(device)
+                logits, _, _ = model(x, return_features=True)
                 loss = ce_loss(logits, y)
             else:
-                loss = ce_loss(logits, y) + supcon_loss(proj, y)
+                x1, x2 = x
+                x1, x2, y = x1.to(device), x2.to(device), y.to(device)
+                x_cat = torch.cat([x1, x2], dim=0)
+                logits_cat, _, proj_cat = model(x_cat, return_features=True)
+                bsz = y.size(0)
+                logits1, logits2 = logits_cat[:bsz], logits_cat[bsz:]
+                proj1, proj2 = proj_cat[:bsz], proj_cat[bsz:]
+                ce = 0.5 * (ce_loss(logits1, y) + ce_loss(logits2, y))
+                sup = supcon_loss(torch.cat([proj1, proj2], dim=0), torch.cat([y, y], dim=0))
+                loss = ce + sup
             loss.backward()
             optimizer.step()
         scheduler.step()
