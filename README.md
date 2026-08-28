@@ -81,6 +81,13 @@ python scripts/visualize_features.py \
   --ood svhn \
   --output outputs/tsne_svhn.png \
   --method both
+
+
+python scripts/visualize_features.py \
+  --checkpoint outputs/ce/best.pt \
+  --ood svhn \
+  --output outputs/tsne_svhn_ce.png \
+  --method both
 ```
 
 This generates a t-SNE scatter of normalized penultimate features, similar to the qualitative analysis in the paper.

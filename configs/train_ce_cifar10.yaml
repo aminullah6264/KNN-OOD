@@ -4,7 +4,7 @@ save_dir: outputs/ce
 
 data:
   root: ./data
-  batch_size: 256
+  batch_size: 1024
   num_workers: 4
 
 model:

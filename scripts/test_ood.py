@@ -109,41 +109,16 @@ def main():
     val_idx = perm[:n_val]
     bank_idx = perm[n_val:]
 
-    # train_dataset_eval = datasets.CIFAR10(
-    #     root=cfg["data_root"],
-    #     train=True,
-    #     download=True,
-    #     transform=_cifar_transform(False),
-    # )
-
-    # train_loader = make_loader(Subset(train_dataset_eval, bank_idx.tolist()), cfg["batch_size"], cfg["num_workers"])
-    # val_loader = make_loader(Subset(train_dataset_eval, val_idx.tolist()), cfg["batch_size"], cfg["num_workers"])
-    # test_id_loader = make_loader(get_cifar10(cfg["data_root"], train=False), cfg["batch_size"], cfg["num_workers"])
-
-
-# Deterministic transform (same as your CIFAR test transform)
-    mean, std = CIFAR_STATS
-    eval_tf = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize(mean, std),
-    ])
-
-    # Use TRAIN split but with eval transform for the feature bank + val split
     train_dataset_eval = datasets.CIFAR10(
-        root=cfg["data_root"], train=True, download=True, transform=eval_tf
+        root=cfg["data_root"],
+        train=True,
+        download=True,
+        transform=_cifar_transform(False),
     )
 
-    # Use TEST split with eval transform for ID test
-    test_dataset_eval = datasets.CIFAR10(
-        root=cfg["data_root"], train=False, download=True, transform=eval_tf
-    )
-
-    train_loader    = make_loader(Subset(train_dataset_eval, bank_idx.tolist()),
-                                cfg["batch_size"], cfg["num_workers"], shuffle=False)
-    val_loader      = make_loader(Subset(train_dataset_eval, val_idx.tolist()),
-                                cfg["batch_size"], cfg["num_workers"], shuffle=False)
-    test_id_loader  = make_loader(test_dataset_eval,
-                                cfg["batch_size"], cfg["num_workers"], shuffle=False)
+    train_loader = make_loader(Subset(train_dataset_eval, bank_idx.tolist()), cfg["batch_size"], cfg["num_workers"])
+    val_loader = make_loader(Subset(train_dataset_eval, val_idx.tolist()), cfg["batch_size"], cfg["num_workers"])
+    test_id_loader = make_loader(get_cifar10(cfg["data_root"], train=False), cfg["batch_size"], cfg["num_workers"])
 
 
     train_feats, _ = extract_features(model, train_loader, device)

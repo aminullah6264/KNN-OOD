@@ -29,8 +29,8 @@ def parse_args():
     p.add_argument("--tsne-perplexity", type=float, default=30.0)
     p.add_argument("--tsne-seed", type=int, default=42)
     # UMAP params
-    p.add_argument("--umap-n-neighbors", type=int, default=20)
-    p.add_argument("--umap-min-dist", type=float, default=0.15)
+    p.add_argument("--umap-n-neighbors", type=int, default=100)
+    p.add_argument("--umap-min-dist", type=float, default=0.3)
     p.add_argument("--umap-seed", type=int, default=42)
     return p.parse_args()
 

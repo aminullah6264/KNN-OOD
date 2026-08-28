@@ -23,6 +23,6 @@ knn:
   use_faiss: true
 
 knn_drop:
-  drop_percent: 10
-  seed: 1234
-  renormalize: true
+  drop_percent: 15
+  seed: 42
+  renormalize: false
